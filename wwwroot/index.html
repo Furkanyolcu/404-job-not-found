@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404JobNotFound</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav>
+    <div class="brand">404JobNotFound</div>
+    <button data-tab="dashboard" class="active">Genel Bakış</button>
+    <button data-tab="intake">Yeni İlan</button>
+    <button data-tab="jobs">İlanlar</button>
+    <button data-tab="history">Geçmiş</button>
+    <button data-tab="profile">Profilim</button>
+    <button data-tab="blacklist">Kara Liste</button>
+  </nav>
+
+  <main>
+    <section id="tab-dashboard" class="tab active">
+      <h1>Genel Bakış</h1>
+      <div id="llm-warning"></div>
+      <div class="stats-bar" id="stats-bar"></div>
+      <div class="panel">
+        <p style="color:var(--muted); font-size:13px; line-height:1.6;">
+          404JobNotFound kişisel iş başvuru yardımcın. Akış: <b>Yeni İlan</b> sekmesinden bir ilan yapıştır →
+          uygunluk skorunu ve gerekçesini gör → <b>İlanlar</b>'dan taslak e-posta üret → gözden geçir/düzenle →
+          onayla → gönder. Hiçbir e-posta senin onayın olmadan gönderilmez.
+        </p>
+      </div>
+    </section>
+
+    <section id="tab-intake" class="tab">
+      <h1>Yeni İlan Ekle</h1>
+      <div class="panel">
+        <h2>İlan metnini yapıştır (önerilen)</h2>
+        <label>İlan metni</label>
+        <textarea id="intake-raw" placeholder="İş ilanının tamamını buraya yapıştır..."></textarea>
+        <button class="btn" id="intake-submit">Analiz Et ve Skorla</button>
+        <div id="intake-msg"></div>
+      </div>
+      <div class="panel">
+        <h2>Ya da manuel gir</h2>
+        <label>Pozisyon</label><input id="m-title" />
+        <label>Şirket</label><input id="m-company" />
+        <label>Açıklama</label><textarea id="m-desc"></textarea>
+        <label>Lokasyon</label><input id="m-location" />
+        <label>Çalışma şekli</label>
+        <select id="m-workmode">
+          <option value="Unknown">Bilinmiyor</option>
+          <option value="Remote">Remote</option>
+          <option value="Hybrid">Hybrid</option>
+          <option value="OnSite">On-site</option>
+        </select>
+        <label>İlan linki</label><input id="m-url" />
+        <label>İletişim e-postası (varsa)</label><input id="m-email" />
+        <button class="btn secondary" id="manual-submit">Manuel Ekle</button>
+      </div>
+    </section>
+
+    <section id="tab-jobs" class="tab">
+      <h1>İlanlar</h1>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Skor</th><th>Pozisyon</th><th>Şirket</th><th>Konum</th><th>Durum</th><th>Başvuru</th></tr></thead>
+          <tbody id="jobs-tbody"></tbody>
+        </table>
+      </div>
+      <div id="job-detail"></div>
+    </section>
+
+    <section id="tab-history" class="tab">
+      <h1>Başvuru Geçmişi</h1>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Pozisyon</th><th>Şirket</th><th>Durum</th><th>Gönderim</th><th>Hata</th></tr></thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="tab-profile" class="tab">
+      <h1>Profilim</h1>
+      <div class="panel">
+        <h2>Temel Bilgiler</h2>
+        <label>Ad Soyad</label><input id="p-fullname" />
+        <label>E-posta</label><input id="p-email" />
+        <label>Telefon</label><input id="p-phone" />
+        <label>Özet</label><textarea id="p-summary"></textarea>
+        <label>Deneyim (yıl)</label><input id="p-years" type="number" min="0" />
+        <label>LinkedIn</label><input id="p-linkedin" />
+        <label>GitHub</label><input id="p-github" />
+        <label>Portfolyo</label><input id="p-portfolio" />
+        <button class="btn" id="profile-save">Kaydet</button>
+        <div id="profile-msg"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Beceriler</h2>
+        <div id="skills-list"></div>
+        <label>Beceri adı</label><input id="s-name" placeholder="örn. ASP.NET Core" />
+        <label>Alternatif yazımlar (virgülle ayır)</label><input id="s-aliases" placeholder="AspNetCore, Asp.Net Core" />
+        <label>Kategori</label><input id="s-category" placeholder="Framework" />
+        <label>Seviye</label>
+        <select id="s-level"><option>Basic</option><option selected>Intermediate</option><option>Advanced</option></select>
+        <button class="btn secondary" id="skill-add">Beceri Ekle</button>
+      </div>
+
+      <div class="panel">
+        <h2>Deneyim Cümleleri (AI e-posta üretiminin kaynağı)</h2>
+        <p style="color:var(--muted); font-size:12px;">AI, e-posta yazarken SADECE burada yazan gerçek deneyimlerini kullanır — başka bir şey uydurmaz.</p>
+        <div id="bullets-list"></div>
+        <label>Deneyim cümlesi</label>
+        <textarea id="b-text" placeholder="örn. ASP.NET Core Web API ile bir e-ticaret backend'i geliştirdim, EF Core ve PostgreSQL kullandım."></textarea>
+        <label>İlgili beceriler (virgülle ayır)</label><input id="b-skills" placeholder="ASP.NET Core, PostgreSQL, EF Core" />
+        <button class="btn secondary" id="bullet-add">Ekle</button>
+      </div>
+
+      <div class="panel">
+        <h2>Özgeçmişler (CV)</h2>
+        <div id="resumes-list"></div>
+        <label>Dosya seç (PDF)</label><input id="r-file" type="file" accept="application/pdf" />
+        <label>Hedef rol tipi</label><input id="r-role" placeholder="General / Backend / FullStack" />
+        <label><input id="r-default" type="checkbox" style="width:auto;display:inline-block;" /> Varsayılan yap</label>
+        <button class="btn secondary" id="resume-upload">Yükle</button>
+      </div>
+    </section>
+
+    <section id="tab-blacklist" class="tab">
+      <h1>Kara Liste</h1>
+      <div class="panel">
+        <div id="blacklist-list"></div>
+        <label>Tip</label>
+        <select id="bl-type"><option value="CompanyName">Şirket Adı</option><option value="Domain">Domain</option><option value="Email">E-posta</option></select>
+        <label>Değer</label><input id="bl-value" />
+        <label>Sebep (opsiyonel)</label><input id="bl-reason" />
+        <button class="btn secondary" id="bl-add">Kara Listeye Ekle</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

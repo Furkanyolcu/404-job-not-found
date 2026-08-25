@@ -1,0 +1,17 @@
+## .NET
+bin/
+obj/
+*.user
+
+## 404JobNotFound local data — never commit secrets, the DB, uploaded CVs, or logs
+.env
+App_Data/
+
+## IDE
+.vs/
+.vscode/
+*.suo
+
+## OS
+.DS_Store
+Thumbs.db
