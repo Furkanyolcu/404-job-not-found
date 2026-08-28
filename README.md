@@ -61,3 +61,7 @@ auth katmanı eklemeden internete açma.
 Resmi API'li iş kaynaklarından (Arbeitnow, Remotive, RemoteOK) otomatik çekme + Hangfire ile
 zamanlama, bounce/complaint webhook takibi, Telegram/Discord üzerinden hızlı onay, çoklu profil/CV
 versiyonlama.
+
+## Lisans
+
+Kişisel kullanım için geliştirildi, ayrı bir lisans dosyası yok.
